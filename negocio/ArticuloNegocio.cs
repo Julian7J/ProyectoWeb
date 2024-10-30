@@ -10,7 +10,7 @@ namespace negocio
 {
     public class ArticuloNegocio
     {
-        public List<Articulo> listar()
+        public List<Articulo> listar(string id = "")
        {
 
         List<Articulo> lista = new List<Articulo>();
@@ -22,7 +22,10 @@ namespace negocio
             {   //Conexion a la base de datos
                 conexion.ConnectionString = "server=.\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true";
                 comando.CommandType = System.Data.CommandType.Text;
-                comando.CommandText = "select Codigo, Nombre, A.Descripcion, C.Descripcion Categoria, M.Descripcion Marca, ImagenUrl, Precio, A.IdCategoria, A.IdMarca, A.Id From ARTICULOS A, CATEGORIAS C, MARCAS M where C.Id = A.IdCategoria and M.Id = A.IdMarca";
+                comando.CommandText = "select Codigo, Nombre, A.Descripcion, C.Descripcion Categoria, M.Descripcion Marca, ImagenUrl, Precio, A.IdCategoria, A.IdMarca, A.Id From ARTICULOS A, CATEGORIAS C, MARCAS M where C.Id = A.IdCategoria and M.Id = A.IdMarca ";
+                if (id != "")
+                    comando.CommandText += " and A.Id = " + id;
+
                 comando.Connection = conexion;
 
                 conexion.Open();
@@ -67,12 +70,59 @@ namespace negocio
             }
        }
 
+        public List<Articulo> listarConSP() 
+        {
+            List<Articulo> lista = new List<Articulo>();
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                // string consulta = "select Codigo, Nombre, A.Descripcion, C.Descripcion Categoria, M.Descripcion Marca, ImagenUrl, Precio, A.IdCategoria, A.IdMarca, A.Id From ARTICULOS A, CATEGORIAS C, MARCAS M where C.Id = A.IdCategoria and M.Id = A.IdMarca ";
+                // datos.setearConsulta(consulta);
+
+                datos.setearProcedimiento("spListar");
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Articulo aux = new Articulo();
+                    aux.Id = (int)datos.Lector["Id"];
+                    aux.Codigo = (string)datos.Lector["Codigo"];
+                    aux.Nombre = (string)datos.Lector["Nombre"];
+                    aux.Descripcion = (string)datos.Lector["Descripcion"];
+
+                    if (!(datos.Lector["ImagenUrl"] is DBNull))
+                        aux.ImagenUrl = (string)datos.Lector["ImagenUrl"];
+
+                    //aux.ImagenUrl = (string)datos.Lector["ImagenUrl"];
+                    aux.Precio = (decimal)datos.Lector["Precio"];
+                    aux.Categoria = new Categorias();
+                    aux.Categoria.Id = (int)datos.Lector["IdCategoria"];
+                    aux.Categoria.Descripcion = (string)datos.Lector["Categoria"];
+                    aux.Marca = new Marcas();
+                    aux.Marca.Id = (int)datos.Lector["IdMarca"];
+                    aux.Marca.Descripcion = (string)datos.Lector["Marca"];
+
+
+
+                    lista.Add(aux);
+                    //Devuelve la lista de objetos
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
         public void agregar(Articulo nuevo) 
         {
             AccesoDatos datos = new AccesoDatos();
                try
             {
-                datos.setearConsulta("insert into ARTICULOS (Codigo, Nombre, Descripcion, Precio, IdCategoria, IdMarca)values('" + nuevo.Codigo + "', '" + nuevo.Nombre + "', '" + nuevo.Descripcion + "', '"+ nuevo.Precio +"', @IdCategoria, @IdMarca)");
+                datos.setearConsulta("insert into ARTICULOS (Codigo, Nombre, Descripcion, ImagenUrl, Precio, IdCategoria, IdMarca)values('" + nuevo.Codigo + "', '" + nuevo.Nombre + "', '" + nuevo.Descripcion + "', '"+ nuevo.ImagenUrl +"', '"+ nuevo.Precio +"', @IdCategoria, @IdMarca)");
                 datos.setearParametro("IdCategoria", nuevo.Categoria.Id);
                 datos.setearParametro("IdMarca", nuevo.Marca.Id);                    
                  
@@ -129,9 +179,9 @@ namespace negocio
             {
                 string consulta = "select Codigo, Nombre, A.Descripcion, C.Descripcion Categoria, M.Descripcion Marca, ImagenUrl, Precio, A.IdCategoria, A.IdMarca, A.Id From ARTICULOS A, CATEGORIAS C, MARCAS M where C.Id = A.IdCategoria and M.Id = A.IdMarca and ";
 
-                if(campo == "Precio")
+                if (campo == "Precio")
                 {
-                    switch (criterio) 
+                    switch (criterio)
                     {
                         case "mayor a":
                             consulta += "Precio > " + filtro;
@@ -144,7 +194,7 @@ namespace negocio
                             break;
                     }
                 }
-                else if(campo == "Nombre")
+                else if (campo == "Nombre")
                 {
                     switch (criterio)
                     {
@@ -160,7 +210,7 @@ namespace negocio
                     }
 
                 }
-                else 
+                else
                 {
                     switch (criterio)
                     {

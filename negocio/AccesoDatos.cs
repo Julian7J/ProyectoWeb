@@ -30,6 +30,12 @@ namespace negocio
             comando.CommandText = consulta;
         }
 
+        public void setearProcedimiento(string sp) 
+        {
+           comando.CommandType = System.Data.CommandType.StoredProcedure;
+           comando.CommandText = sp;
+        }
+
         public void ejecutarLectura() 
         {
             comando.Connection = conexion;
@@ -53,6 +59,20 @@ namespace negocio
             {
                 conexion.Open();
                 comando.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public int ejecutarAccionScalar()
+        {
+            comando.Connection = conexion;
+            try
+            {
+                conexion.Open();
+                return int.Parse(comando.ExecuteScalar().ToString());
             }
             catch (Exception ex)
             {
