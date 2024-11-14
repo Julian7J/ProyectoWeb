@@ -13,7 +13,7 @@ namespace ProyectoWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Seguridad.sesionActiva(Session["usuario"]))
+            if (!Seguridad.sesionActiva(Session["User"]))
                 Response.Redirect("Login.aspx", false);
         }   
     }
