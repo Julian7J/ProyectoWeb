@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using dominio;
+using System.Configuration;
 
 namespace negocio
 {
@@ -20,7 +21,7 @@ namespace negocio
 
             try
             {   //Conexion a la base de datos
-                conexion.ConnectionString = "server=.\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true";
+                conexion.ConnectionString = ConfigurationManager.AppSettings["cadenaConexion"];
                 comando.CommandType = System.Data.CommandType.Text;
                 comando.CommandText = "select Codigo, Nombre, A.Descripcion, C.Descripcion Categoria, M.Descripcion Marca, ImagenUrl, Precio, A.IdCategoria, A.IdMarca, A.Id From ARTICULOS A, CATEGORIAS C, MARCAS M where C.Id = A.IdCategoria and M.Id = A.IdMarca ";
                 if (id != "")
