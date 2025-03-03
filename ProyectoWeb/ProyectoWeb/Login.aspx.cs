@@ -27,7 +27,7 @@ namespace ProyectoWeb
                 if (negocio.Login(usuario))
                 {
                     Session.Add("user", usuario);
-                    Response.Redirect("Default.aspx", false);
+                    Response.Redirect("MiPerfil.aspx", false);
                 }
                 else 
                 {

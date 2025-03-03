@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using dominio;
+using Microsoft.Win32;
 using negocio;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,14 @@ namespace ProyectoWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+          
+     //          if(!(Page is Login || Page is Default))
+     
+     //           {
 
-         //   if(!(Page is Login || Page is Default))
-           
-        //    {
-
-         //        if (!Seguridad.sesionActiva(Session["usuario"]))
-         //            Response.Redirect("Login.aspx", false);
-         //        }
+     //               if (!Seguridad.sesionActiva(Session["usuario"]))
+     //                   Response.Redirect("Login.aspx", false);
+     //               }
         }
 
         protected void btnSalir_Click(object sender, EventArgs e)

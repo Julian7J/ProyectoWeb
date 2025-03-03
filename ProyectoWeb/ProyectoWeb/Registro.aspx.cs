@@ -29,10 +29,10 @@ namespace ProyectoWeb
 
                 user.User = txtEmail.Text;
                 user.Pass = txtPassword.Text;
-                int id = usuarioNegocio.insertarNuevo(user);
-
-              //  emailService.armarCorreo(user.User, "Hola", "te damos la bienvenida a la aplicacion");
-              //  emailService.enviarEmail();
+                user.Id = usuarioNegocio.insertarNuevo(user);
+                Session.Add("usuario", user);
+                //  emailService.armarCorreo(user.User, "Hola", "te damos la bienvenida a la aplicacion");
+                //  emailService.enviarEmail();
                 Response.Redirect("Default.aspx", false);
             }
             catch (Exception ex)
